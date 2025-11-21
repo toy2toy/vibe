@@ -7,3 +7,4 @@ Docs for your agent setup.
 Next steps:
 - Rename/update `AGENT_TEMPLATE.md` when creating new agents.
 - Add code scaffold under `agent/` if you want a runnable agent here.
+# vibe
