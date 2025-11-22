@@ -60,6 +60,7 @@ Safe, deterministic, tool-augmented problem solving: translate intent into a gro
 ## Configuration
 - Env vars: honor `SANDBOX_MODE`, `NETWORK_ACCESS`, and task-specific keys. For AI seeding, read the OpenAI key from `AI_TOKEN`/`OPENAI_API_KEY` (do not hardcode secrets); optional `SEED_TOKEN` can gate `/seed/ai` via `X-Seed-Token`.
 - Logging: standard format `%(asctime)s [%(levelname)s] %(name)s:%(lineno)d %(message)s` for clear timestamps and code line references across services and scripts.
+- Each project folder (named after the project, e.g., `icon_mall`) should include its own `PROJECT_GUIDE.md` documenting structure, env, run, and seed steps, and follow the folder-name as project-name convention.
 
 ## Standard Workflow
 1. Understand the task; restate requirements.
