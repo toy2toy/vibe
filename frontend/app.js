@@ -7,8 +7,6 @@ const gridEl = document.getElementById("icon-grid");
 const searchInput = document.getElementById("search-input");
 const resultsCount = document.getElementById("results-count");
 const clearSearch = document.getElementById("clear-search");
-const filtersPanel = document.getElementById("filters");
-const collapseBtn = document.getElementById("collapse-filters");
 const tabsEl = document.getElementById("tabs");
 const resetFilterBtn = document.getElementById("reset-filter");
 
@@ -18,7 +16,9 @@ function renderGrid(items) {
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
-      <div class="icon-tile"><img src="${item.image}" alt="${item.label}" /></div>
+      <div class="icon-tile">
+        <img src="${item.image}" alt="${item.label}" onerror="this.onerror=null;this.src='assets/default/icon.svg';" />
+      </div>
       <div class="icon-label">${item.label}</div>
       <div class="icon-meta">${item.category || "—"} · ${item.state || "—"}</div>
       <div class="icon-meta">Price: $${item.price}</div>
@@ -42,13 +42,6 @@ clearSearch.addEventListener("click", () => {
   searchInput.value = "";
   applyFilter();
   searchInput.focus();
-});
-
-collapseBtn.addEventListener("click", () => {
-  filtersPanel.classList.toggle("hidden");
-  collapseBtn.textContent = filtersPanel.classList.contains("hidden")
-    ? "Show"
-    : "Hide";
 });
 
 resetFilterBtn.addEventListener("click", () => {
@@ -110,7 +103,7 @@ async function loadItems() {
       price: item.price,
       category: item.category.name,
       state: item.category.state,
-      image: pickImage(item.category.name),
+      image: pickImage(item.category.name, item.id),
     }));
     renderGrid(icons);
   } catch (err) {
@@ -123,9 +116,9 @@ function slugify(name) {
   return name.toLowerCase().replace(/\s+/g, "-");
 }
 
-function pickImage(categoryName) {
+function pickImage(categoryName, itemId) {
   const slug = slugify(categoryName);
-  return `assets/${slug}/icon.svg`;
+  return `assets/${slug}/icon_ai_${itemId}.png`;
 }
 
 async function init() {

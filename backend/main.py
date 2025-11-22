@@ -1,7 +1,11 @@
 import pathlib
 from typing import List, Optional
 
-from fastapi import Depends, FastAPI, HTTPException
+import os
+import subprocess
+import sys
+import logging
+from fastapi import Depends, FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy import Column, ForeignKey, Integer, String, create_engine, select
@@ -14,6 +18,11 @@ DATABASE_URL = f"sqlite:///{DB_PATH}"
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s:%(lineno)d %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 
 class Category(Base):
@@ -126,6 +135,48 @@ def get_item(item_id: int, db: Session = Depends(get_db)):
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
     return item
+
+
+@app.post("/seed/ai")
+def trigger_ai_seed(x_seed_token: str | None = Header(default=None)):
+    """
+    Trigger AI-driven seeding: clears categories/items and repopulates via ChatGPT.
+    Requires OPENAI_API_KEY in the environment.
+    Optional protection: set SEED_TOKEN env and pass header X-Seed-Token.
+    """
+    seed_token = os.getenv("SEED_TOKEN")
+    if seed_token and x_seed_token != seed_token:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    env = os.environ.copy()
+    if "OPENAI_API_KEY" not in env:
+        raise HTTPException(status_code=400, detail="OPENAI_API_KEY not set")
+    try:
+        result = subprocess.check_output(
+            [sys.executable, "seed_ai.py"],
+            cwd=pathlib.Path(__file__).parent,
+            env=env,
+            stderr=subprocess.STDOUT,
+            text=True,
+            timeout=60,
+        )
+        return {"status": "ok", "log": result.strip().splitlines()}
+    except subprocess.CalledProcessError as exc:
+        log_lines = exc.output.strip().splitlines() if exc.output else []
+        log_blob = "\n".join(log_lines)
+        logger.error("Seed failed:\n%s", log_blob)
+        status_code = (
+            429
+            if any("RateLimitError" in line or "insufficient_quota" in line for line in log_lines)
+            else 500
+        )
+        raise HTTPException(
+            status_code=status_code, detail={"error": "Seed failed", "log": log_lines}
+        ) from exc
+    except subprocess.TimeoutExpired:
+        logger.error("Seed timed out")
+        raise HTTPException(
+            status_code=500, detail={"error": "Seed timed out", "log": []}
+        )
 
 
 @app.get("/categories", response_model=List[CategoryOut])

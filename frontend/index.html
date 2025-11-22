@@ -12,65 +12,23 @@
       <div class="brand-mark">IB</div>
       <span class="brand-name">IconBay</span>
     </div>
-    <nav class="top-nav">
-      <a href="#" class="nav-link active">Icons</a>
-      <a href="#" class="nav-link">Stickers</a>
-      <a href="#" class="nav-link">Animated</a>
-      <a href="#" class="nav-link">Interface</a>
-      <a href="#" class="nav-link">More</a>
-    </nav>
     <div class="top-actions">
       <div class="search-wrap">
-        <input type="search" id="search-input" placeholder="Search icons" aria-label="Search icons">
+        <input type="search" id="search-input" placeholder="Search items" aria-label="Search items">
         <span class="search-clear" id="clear-search" aria-label="Clear search">×</span>
       </div>
-      <button class="ghost-btn">Collections</button>
-      <button class="ghost-btn primary">Pricing</button>
     </div>
   </header>
 
-  <main class="layout">
-    <aside class="filters" id="filters">
-      <div class="filters-header">
-        <span>Filters</span>
-        <button class="link-btn" id="collapse-filters">Hide</button>
+  <main class="content">
+    <div class="content-top">
+      <div class="tabs" id="tabs"></div>
+      <div class="group-actions">
+        <span id="results-count">0 Items</span>
+        <button class="ghost-btn" id="reset-filter">All</button>
       </div>
-      <div class="filter-group">
-        <h4>Colors</h4>
-        <div class="pill-row">
-          <button class="pill">Black</button>
-          <button class="pill">Colors</button>
-          <button class="pill">Gradient</button>
-        </div>
-      </div>
-      <div class="filter-group">
-        <h4>Shape</h4>
-        <div class="pill-row">
-          <button class="pill">Outline</button>
-          <button class="pill">Fill</button>
-          <button class="pill">Lineal</button>
-          <button class="pill">Hand Drawn</button>
-        </div>
-      </div>
-      <div class="filter-group">
-        <h4>Sort by</h4>
-        <div class="pill-row">
-          <button class="pill">Recent</button>
-          <button class="pill">Trending</button>
-        </div>
-      </div>
-    </aside>
-
-    <section class="content">
-      <div class="content-top">
-        <div class="tabs" id="tabs"></div>
-        <div class="group-actions">
-          <span id="results-count">0 Items</span>
-          <button class="ghost-btn" id="reset-filter">All</button>
-        </div>
-      </div>
-      <div class="grid" id="icon-grid"></div>
-    </section>
+    </div>
+    <div class="grid" id="icon-grid"></div>
   </main>
 
   <script src="./app.js"></script>
