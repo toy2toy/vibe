@@ -4,6 +4,7 @@
 - Backend: FastAPI (`backend/main.py`), SQLite (`backend/app.db`), SQLAlchemy models `Category` and `Item`.
 - Frontend: static HTML/CSS/JS in `frontend/`, served via `python -m http.server`.
 - Assets: per-category folders under `frontend/assets/<category-slug>/`; AI-generated item icons saved as `icon_ai_<item_id>.png`. Default fallback at `frontend/assets/default/icon.svg`.
+- Project root: `codex/<project_name>/` containing `backend/`, `frontend/`, `requirements.txt`, `PROJECT_GUIDE.md`, `kickstart_vibe/`.
 
 ## Environment & Logging
 - Set `AI_TOKEN` or `OPENAI_API_KEY` for OpenAI access. Optional `SEED_TOKEN` gates `POST /seed/ai` via `X-Seed-Token`.
