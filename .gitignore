@@ -1,1 +1,7 @@
 credentials
+codex_venv/
+pyvenv.cfg
+.envrc
+backend/app.db
+__pycache__/
+*.pyc
