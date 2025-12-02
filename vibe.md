@@ -56,6 +56,24 @@ Safe, deterministic, tool-augmented problem solving: translate intent into a gro
 - Tool errors: retry once with adjusted parameters; otherwise explain and ask for guidance.
 - Compilation/test errors: parse stack trace, locate failing file/line, apply minimal patch, re-run tests.
 - Infinite loop prevention: stop and request clarification.
+- HTTP retries: use tenacity (random backoff between `RETRY_BACKOFF_SECONDS` and `RETRY_BACKOFF_MAX_SECONDS`) and include `X-Client-Request-Id` on outbound requests; retry 429/5xx and transient connection/timeouts, skip client errors like insufficient balance (402).
+- API debugging: when using OpenAI chat completions, prefer `with_raw_response` and log raw HTTP response headers (format them as `key: value` pairs) before parsing the body.
+
+## Configuration
+- Env vars and loading: export keys in `codex/.envrc`, copy those exports into each project’s `.env` when that project’s loader expects it, and use the project’s `env_loader` to ingest the right file(s). Optional `SEED_TOKEN` can gate `/seed/ai` via `X-Seed-Token`.
+- Store all Python dependencies in the project’s `requirements.txt`, created during project kickstart.
+- Each project folder (named after the project, e.g., `icon_mall`) should include its own `PROJECT_GUIDE.md` documenting structure, env, run, and seed steps, and follow the folder-name as project-name convention; `PROJECT_GUIDE.md` is created alongside the project kickstart as a clone of `kickstart_vibe/AGENT.md`.
+- Logging: standard format `%(asctime)s [%(levelname)s] %(name)s:%(lineno)d %(message)s` for clear timestamps and code line references across services and scripts.
+
+## Coding Style
+- Follow PEP 8 for Python (imports, spacing, line length, naming); keep JS/CSS consistent with existing formatting and project conventions.
+- Prefer shared constants modules over inline literals; keep logging in the standard format unless a project specifies otherwise.
+- Cluster related logic together and separate sections with blank lines to aid readability.
+- Keep try/except blocks small and targeted around the risky operation to keep code concise and errors clear.
+
+## Testing
+- Keep unit tests in sync with integration wrappers (e.g., retry helpers); mock external calls (`requests`, OpenAI clients) and assert retry wrappers are invoked instead of real network.
+- Run targeted suites after changes (e.g., `python -m pytest platform/tests/test_weather_today.py`) and update fixtures when response shapes change.
 
 ## Standard Workflow
 1. Understand the task; restate requirements.
